@@ -68,7 +68,7 @@ def telegram():
                 else:
                     #write to error log file
                     with open('error.txt', 'a') as f:
-                        f.write(f'{r.status_code} {r.reason} {r.text} {filePath} {i} {time.ctime()}')
+                        f.write(f'{r.status_code} {r.reason} {r.text} {filePath}  {time.ctime()}')
                     continue
 
                 print(r.status_code, r.reason, r.content)
