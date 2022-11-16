@@ -22,8 +22,8 @@ async def root():
     if not os.path.exists('./Memes'):
         for subredditItem in subreddits:
             #get all image in memes subreddit and download them
-            subreddit = reddit.subreddit(subredditItem)
-            for submission in subreddit.top(limit=200):
+            subreddit = await reddit.subreddit(subredditItem)
+            async for submission in subreddit.top(limit=200):
                 if submission.url.endswith('.jpg') or submission.url.endswith('.png') or submission.url.endswith('.gif'):
                     extension = str(submission.url.split('.')[-1])
                     if not os.path.exists(f'./Memes/{subredditItem}/{submission.id}.{extension}'):
