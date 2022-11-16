@@ -4,16 +4,16 @@ import requests
 from bs4 import BeautifulSoup
 import zipfile
 import  praw
+import asyncpraw
 import time
 from starlette.responses import FileResponse
 
 app = FastAPI()
 
-bin = []
 
 @app.get("/")
 async def root():
-    reddit = praw.Reddit(
+    reddit = asyncpraw.Reddit(
         client_id='WfkcHPYUP8ddD0cCA7tVsQ',
         client_secret='7xeFrkikKbI12AOW8DQdr2WoT5bcJw',
         user_agent='Memeland',
@@ -23,11 +23,11 @@ async def root():
         for subredditItem in subreddits:
             #get all image in memes subreddit and download them
             subreddit = reddit.subreddit(subredditItem)
-            for submission in subreddit.top(limit=50):
+            for submission in subreddit.top(limit=200):
                 if submission.url.endswith('.jpg') or submission.url.endswith('.png') or submission.url.endswith('.gif'):
                     extension = str(submission.url.split('.')[-1])
-                    if not './Memes/'+str(submission.id)+str(extension) in open('log.txt').read():
-                        r = requests.get(submission.url)
+                    if not os.path.exists(f'./Memes/{subredditItem}/{submission.id}.{extension}'):
+                        r = requests.get(submission.url, allow_redirects=True)
                         if not os.path.isdir(f'./Memes/{subredditItem}'):
                             os.makedirs(f'./Memes/{subredditItem}')
                         with open(f'Memes/{subredditItem}/{submission.id}.{extension}', 'wb') as f:
@@ -49,6 +49,8 @@ def telegram():
     apiToken = '5746760871:AAEZbq_-e01nF602wCinxXjGRFMbWh77YMQ'
     chatID = '-1001615139079'
     apiURL = f'https://api.telegram.org/bot{apiToken}/'+'sendPhoto?chat_id='+chatID
+
+    bin = []
 
     #send all files in ./Memes directory to telegram
     for folderName, subfolders, filenames in os.walk('./Memes'):
