@@ -19,19 +19,19 @@ async def root():
         user_agent='Memeland',
     )
     subreddits = ['meme','animemes','4PanelCringe','funny']
-    if not os.path.exists('./Memes'):
-        for subredditItem in subreddits:
-            #get all image in memes subreddit and download them
-            subreddit = await reddit.subreddit(subredditItem)
-            async for submission in subreddit.top(limit=50):
-                if submission.url.endswith('.jpg') or submission.url.endswith('.png') or submission.url.endswith('.gif'):
-                    extension = str(submission.url.split('.')[-1])
-                    if not os.path.exists(f'./Memes/{subredditItem}/{submission.id}.{extension}'):
-                        r = requests.get(submission.url, allow_redirects=True)
-                        if not os.path.isdir(f'./Memes/{subredditItem}'):
-                            os.makedirs(f'./Memes/{subredditItem}')
-                        with open(f'Memes/{subredditItem}/{submission.id}.{extension}', 'wb') as f:
-                            f.write(r.content)
+
+    for subredditItem in subreddits:
+        #get all image in memes subreddit and download them
+        subreddit = await reddit.subreddit(subredditItem)
+        async for submission in subreddit.top(limit=10):
+            if submission.url.endswith('.jpg') or submission.url.endswith('.png') or submission.url.endswith('.gif'):
+                extension = str(submission.url.split('.')[-1])
+                if not os.path.exists(f'./Memes/{subredditItem}/{submission.id}.{extension}'):
+                    r = requests.get(submission.url, allow_redirects=True)
+                    if not os.path.isdir(f'./Memes/{subredditItem}'):
+                        os.makedirs(f'./Memes/{subredditItem}')
+                    with open(f'Memes/{subredditItem}/{submission.id}.{extension}', 'wb') as f:
+                        f.write(r.content)
 
      # #make a zip file from memes directory
      # zipObj = zipfile.ZipFile('Memes.zip', 'w')
