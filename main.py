@@ -32,19 +32,13 @@ async def root():
                 with open(f'Memes/{subredditItem}/{submission.id}.{extension}', 'wb') as f:
                     f.write(r.content)
 
-     # #make a zip file from memes directory
-     # zipObj = zipfile.ZipFile('Memes.zip', 'w')
-     # for folderName, subfolders, filenames in os.walk('./Memes'):
-     #     for filename in filenames:
-     #         filePath = os.path.join(folderName, filename)
-     #         zipObj.write(filePath)
-     # zipObj.close()
-    telegram()
+    #send all files to telegram
+    await telegram()
 
     return {"message": "Hello World"}
 
 
-def telegram():
+async def telegram():
     apiToken = '5746760871:AAEZbq_-e01nF602wCinxXjGRFMbWh77YMQ'
     chatID = '-1001615139079'
     apiURL = f'https://api.telegram.org/bot{apiToken}/'+'sendPhoto?chat_id='+chatID
